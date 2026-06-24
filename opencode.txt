@@ -1,0 +1,54 @@
+Resumen de lo que entendí:
+- N=12 puntos (por defecto) en línea recta horizontal
+- Todos se mueven a misma velocidad y misma dirección
+- Cuando el punto líder llega al borde, todos rebotan simultáneamente (como un grupo), manteniendo el espaciado → nunca chocan
+- El "ángulo entre ellos" es el espaciado uniforme (distancia = L/N), que se recalcula al añadir/eliminar
+- Colores: cada punto con un color único (arcoíris HSL), y al añadir uno nuevo se le asigna otro color automáticamente
+- Se puede añadir y eliminar puntos con controles UI
+
+Plan definitivo:
+Elemento	Descripción
+Círculo	Contorno sutil centrado en el canvas
+Diámetros	N líneas desde el centro, cada una a 360/N grados de separación
+Puntos	Cada punto oscila sobre su propio diámetro, de extremo a extremo del círculo
+Movimiento	Velocidad constante, todos a la misma velocidad
+Rebote	Cada punto rebota independientemente al llegar al borde del círculo (no se chocan porque cada uno va en su propia línea)
+Arranque	Escalonado: punto 1 sale del borde, luego punto 2, luego punto 3...
+Colores	HSL distribuido uniformemente (hue = i * 360/N)
+Añadir/Quitar	Recalcula ángulos de diámetros, colores, y espaciado
+
+Física de cada punto:
+- progreso va de −R a +R a lo largo de su diámetro
+- x = centroX + cos(ángulo) * progreso
+- y = centroY + sin(ángulo) * progreso
+- Cuando progreso > +R o progreso < −R, invierte dirección
+Visual: sutil (opacity baja) para círculo y líneas, puntos brillantes con colores vivos.
+
+Ángulo de diámetros - i·π/N → N=2 da 0° y 90° (diámetros distintos)
+Display ángulo - 180/N° muestra 15° para N=12
+Colores canvas - Detecta tema y usa colores apropiados
+
+Velocidad
+Dos botones: ⟵ (ralentizar) y ⟶ (acelerar)
+Rango: 0.5 a 5.0, incremento/decremento de 0.3
+Display: Vel: 1.8
+- Toggle button ☀️/🌙
+- Usa prefers-color-scheme como default
+- Guarda preferencia en localStorage
+
+SEO
+<meta name="description" content="Visualización interactiva de puntos oscilando sobre diámetros de un círculo con control de velocidad, temas y N puntos configurable.">
+<meta name="keywords" content="puntos, círculo, diámetros, oscilación, movimiento, visualización, interactivo">
+<meta name="author" content="OpenCode">
+<meta property="og:title" content="Puntos en Diámetros">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+ ARIA
+- role="application" en container
+- aria-label en cada botón (Añadir punto, Eliminar punto, Acelerar, Ralentizar, Cambiar tema)
+- aria-live="polite" en displays de N, ángulo y velocidad
+- role="img" + aria-label="Animación de puntos oscilando sobre diámetros" en canvas
+- aria-valuenow / aria-valuemin / aria-valuemax implícitos
+
+	
